@@ -1540,7 +1540,11 @@ struct  SharedMem
     size = rval.size;
     owner = rval.owner;
 
+#ifdef _MSC_VER
+    strncpy_s(path, rval.path, sizeof(path));
+#else
     strncpy(path, rval.path, sizeof(path));
+#endif
 
     rval.clear();
   }
@@ -1578,7 +1582,13 @@ public:
 
     #ifdef _WIN32      // windows
       sm.fileHndl = nullptr;
-      if(!raw_path){ strcpy(sm.path, "simdb_"); }
+      if(!raw_path){
+#ifdef _MSC_VER
+        strcpy_s(sm.path, "simdb_");
+#else
+        strcpy(sm.path, "simdb_");
+#endif
+      }
     #elif defined(__APPLE__) || defined(__MACH__) || defined(__unix__) || defined(__FreeBSD__) || defined(__linux__)  // osx, linux and freebsd
       sm.fileHndl = 0;
       strcpy(sm.path, P_tmpdir "/simdb_");
@@ -1588,7 +1598,13 @@ public:
     if(len > sizeof(sm.path)-1){
       *error_code = simdb_error::PATH_TOO_LONG;
       return move(sm);
-    }else{ strcat(sm.path, name); }
+    }else{
+#ifdef _MSC_VER
+      strcat_s(sm.path, name);
+#else
+      strcat(sm.path, name);
+#endif
+    }
 
     #ifdef _WIN32      // windows
       if(raw_path)
