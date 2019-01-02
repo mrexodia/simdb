@@ -1691,7 +1691,9 @@ public:
     ptr(nullptr),
     size(0),
     owner(false)
-  {}
+  {
+    memset(path, 0, sizeof(path));
+  }
   SharedMem(SharedMem&)       = delete;
   SharedMem(SharedMem&& rval){ mv(std::move(rval)); }
   SharedMem& operator=(SharedMem&& rval){ mv(std::move(rval)); return *this; }
